@@ -13,6 +13,22 @@ public class Player {
 		ini_xy();
 	}
 	
+	public void reset () {
+		cash=30000;
+		pos=0;
+		card_num=0;
+		map_x=0;
+		map_y=0;
+		land_num=0;
+		time=1000;
+		turn=-1;
+		charactor=0;
+		AI=false;
+		player=false;
+		lose=false;
+		card = null;
+	}
+	
 	public void ini_xy(){
 		map_x = 2923*7/10+180;
 		map_y = 2067/2-60;

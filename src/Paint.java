@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -70,14 +72,17 @@ class Paint extends JPanel implements KeyListener {
 	}
 	
 	public void change_window(Graphics g){
+		if(timer1>63) timer1 = 63;
 		sc_ok=false;
 		g.setColor(new Color(0,0,0,timer1*4));
 		g.fillRect(0,0,this.getWidth(),this.getHeight());
-		timer1++;
+		timer1+=2;
+		if(timer1>63) timer1 = 63;
 	}
 	
 	public void change_window2(Graphics g){
-		timer1--;
+		timer1-=2;
+		if(timer1<0) timer1 = 0;
 		g.setColor(new Color(0,0,0,timer1*4));
 		g.fillRect(0,0,this.getWidth(),this.getHeight());
 		if(timer1==0){
@@ -232,10 +237,15 @@ class Paint extends JPanel implements KeyListener {
 				if(ini3) {
 					ini3();
 					ini3=false;
-					sc=1;
+				}
+				if(ini4) {
+					ini4();
+					ini4=false;
+					if(window_x>2923-this.getWidth())window_x=2923.0-this.getWidth();
+					if(window_y>2067-this.getHeight())window_y=2067.0-this.getHeight();
 				}
 				for(int i=0;i<player_num;i++)players[i].turn=i;
-				map_index=sc;
+				map_index=1;
 				sw1=true;
 				timer1=0;
 			}
@@ -279,9 +289,9 @@ class Paint extends JPanel implements KeyListener {
 			
 		}
 		if(window==4){
-			if(ini4) {
-				ini4();
-				ini4=false;
+			if(timer1==63&&sw2){
+				window=2;
+				bool4=false;
 			}
 			g.drawImage(bg[map_index], (int)Math.round(-window_x), (int)Math.round(-window_y), null);
 			
@@ -404,21 +414,25 @@ class Paint extends JPanel implements KeyListener {
 					}
 				}
 				if(bool3) skill(g);
-				if(bool4) {//menu
+				if(bool4) {                          //menu
 					g.drawImage(board_img, 0, 0, this.getWidth(), this.getHeight(), null);
-					String[] a={"return main menu","resume"};
+					String[] a={"return main menu","resume","exit game"};
 					Color c3 = new Color(82, 74, 55,255);
 					Color c4 =new Color(100, 100, 100,100);
 					draw_section(g, a, -500, -200, c3, c4,0, 100);
 					
 					if((key_space||mouse_sc&&mouse_press&& sw1==false)&&sc_ok) {
 						if(sc==0) {
-							
-							
+							for(int i=0;i<6;i++) players[i].reset();
+							players[0].change_charactor(1, player_charactor);
+							players[1].change_charactor(2, player_charactor);
+							ini3=false;
+							sw2=true;
+							timer1=0;
+							for(int i=0;i<40;i++) lands[i].reset();
 						}
 						if(sc==1)bool4=false;					//resume game
-						if(sc==2);					//option
-						if(sc==3)System.exit(0);	//exit game
+						if(sc==2)System.exit(0);	//exit game
 					}
 				}else {
 					bool4 = draw_button(g, "Menu", -0.45, -0.4 , c1, c2, 0.05);
@@ -576,7 +590,7 @@ class Paint extends JPanel implements KeyListener {
 						}
 						if(players[i].time==0)bool2=true; //time over
 					}
-					if(bool2){
+					if(bool2){    //change player
 						for(int i=0;i<player_num;i++){
 							if(players[i].turn==0){
 								players[i].time=timeLimit;
@@ -603,6 +617,7 @@ class Paint extends JPanel implements KeyListener {
 				}
 			}
 			if(sw1)change_window2(g);
+			if(sw2)change_window(g);
 			
 			if(timer_g_move<1&&!bool4)do_mouse_drag();
 		}
@@ -905,15 +920,20 @@ class Paint extends JPanel implements KeyListener {
 		return pencolor;
 	}
 	
-	public void paintComponent( Graphics g2 ){
+	public void paintComponent( Graphics g2 ){   //show image
 		if(img==null){
-			img = new BufferedImage(1024, 768, BufferedImage.TYPE_INT_ARGB);
+			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+			GraphicsDevice gd = ge.getDefaultScreenDevice();
+			int width = gd.getDisplayMode().getWidth();
+			int height = gd.getDisplayMode().getHeight();
+			img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 			Graphics2D g =(Graphics2D)img.getGraphics();
 			g.setColor(Color.white);
 			g.fillRect(0,0,this.getWidth(),this.getHeight());
 		}
-		
 		Graphics2D g =(Graphics2D)img.getGraphics();
+		g.setColor(Color.black);
+		g.fillRect(0,0,this.getWidth(),this.getHeight());
 		
 		drawgame(g);
 		

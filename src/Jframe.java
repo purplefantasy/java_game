@@ -7,6 +7,10 @@ import java.io.IOException;
 
 public class Jframe extends JFrame {
 	
+	static GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+	static GraphicsDevice gd = ge.getDefaultScreenDevice();
+	static int width = gd.getDisplayMode().getWidth();
+	static int height = gd.getDisplayMode().getHeight();
 	Paint pane = null;
 
 	static Jframe frame;
@@ -14,7 +18,7 @@ public class Jframe extends JFrame {
 	public Jframe(String title) throws IOException {
 		pane = new Paint(frame);
 		setTitle(title);
-		setSize(1000,800);
+		setSize(width, height);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		getContentPane().setBackground(Color.gray);
 		getContentPane().setLayout(new BorderLayout());
@@ -25,10 +29,8 @@ public class Jframe extends JFrame {
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		frame = new Jframe("Dice game");
-		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		GraphicsDevice gd = ge.getDefaultScreenDevice();
 		gd.setFullScreenWindow(frame);
-		frame.setSize(1024, 768);
+		frame.setSize(width, height);
 		frame.setVisible(true);
 		frame.setResizable(false);
 	}

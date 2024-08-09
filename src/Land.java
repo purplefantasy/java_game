@@ -11,6 +11,21 @@ public class Land {
 		
 	}
 	
+	public void reset() {
+		player_num = 0;
+		map_x=0;
+		map_y=0;
+		window_x=0;
+		window_y=0;
+		level=0;
+		owner=-1;
+		cost=1000;
+		special=-1;
+		cold=0;
+		cost+=(int)(Math.random()*2200)+1;
+		set_map_xy();
+	}
+	
 	public int[] house_anime() {
 		for(int i=0;i<level;i++) {
 			if(pos/10==0) {
